@@ -30,7 +30,7 @@ mail_server = parser.get('exchange', 'exchange_server')
 mail_folder = parser.get('exchange', 'email_folder')
 mail_sender = parser.get('receivers', 'from')
 mail_to = parser.get('receivers', 'to')
-mail_cc = parser.get('receivers', 'cc')
+mail_cc = [parser.get('receivers', 'cc1'), parser.get('receivers', 'cc2')]
 
 
 def exch_extract():
@@ -82,7 +82,7 @@ def mailer(message):
     '''Function to send emails'''
     sub = "Bugs with high reminder count"
     sender = mail_sender
-    receivers = [mail_to, mail_cc]
+    receivers = [mail_to] + mail_cc
     msg = '''From: XMS BUG TRACKING <{}>
 To:{}
 Cc:{}
@@ -98,7 +98,7 @@ Please follow up on the below bugs and request the respective owners to keep the
 
 Thanks,
 Sandeep
-'''.format(sender, ';'.join(receivers), mail_cc, sub, message)
+'''.format(sender, mail_to, ';'.join(mail_cc), sub, message)
     print(msg)
     try:
         smtpObj = smtplib.SMTP(mail_server, 25)
