@@ -21,17 +21,16 @@ parser.read("conf.ini")
 reminder = re.compile(r'Reminder: ([3-9]|\d{2})')
 
 # regex to match the bugid string in the subject line
-bug_id   = re.compile(r'[A-Z]{3}\d{7}')
+bug_id = re.compile(r'[A-Z]{3}\d{7}')
 
 
-mail_account  = parser.get('auth','email_account')
-mail_password = parser.get('auth','email_password')
-mail_server   = parser.get('exchange','exchange_server')
-mail_folder   = parser.get('exchange','email_folder')
-mail_sender   = parser.get('receivers','from')
-mail_to       = parser.get('receivers','to')
-mail_cc       = parser.get('receivers','cc')
-
+mail_account = parser.get('auth', 'email_account')
+mail_password = parser.get('auth', 'email_password')
+mail_server = parser.get('exchange', 'exchange_server')
+mail_folder = parser.get('exchange', 'email_folder')
+mail_sender = parser.get('receivers', 'from')
+mail_to = parser.get('receivers', 'to')
+mail_cc = parser.get('receivers', 'cc')
 
 
 def exch_extract():
@@ -52,15 +51,17 @@ def exch_extract():
 
         print("Connected to exchange server")
         # select returns "type" code and no of mails in the selected mailbox as data
-        typ , data = my_mail.select(mail_folder)
+        typ, data = my_mail.select(mail_folder)
         #  Format date = '17-Feb-2017'
         # date = datetime.date.today().strftime("%d-%b-%Y")
         date = '17-Feb-2017'  # For Testing comment the below line
-        date = (datetime.date.today() - datetime.timedelta(1)).strftime("%d-%b-%Y")
-        result, data = my_mail.search(None, '(SENTON {date} HEADER Subject "[ACTION REQUIRED][Reminder:")'.format(date=date))
+        # date = (datetime.date.today() - datetime.timedelta(1)).strftime("%d-%b-%Y")
+        date = datetime.date.today().strftime("%d-%b-%Y")
+        result, data = my_mail.search(
+            None, '(SENTON {date} HEADER Subject "[ACTION REQUIRED][Reminder:")'.format(date=date))
         # result, data = mail.search(None, '(SENTSINCE {date} HEADER Subject "My Subject" NOT FROM "sand@ggm.com")'.format(date=date))
-        ids = data[0] # data is a list.
-        id_list = ids.split() # ids is a space separated string
+        ids = data[0]  # data is a list.
+        id_list = ids.split()  # ids is a space separated string
         subs = {}
         for id in id_list:
             result, data = my_mail.fetch(id, '(RFC822)')
@@ -81,7 +82,7 @@ def mailer(message):
     '''Function to send emails'''
     sub = "Bugs with high reminder count"
     sender = mail_sender
-    receivers = [mail_to,mail_cc]
+    receivers = [mail_to, mail_cc]
     msg = '''From: XMS BUG TRACKING <{}>
 To:{}
 Cc:{}
@@ -97,7 +98,7 @@ Please follow up on the below bugs and request the respective owners to keep the
 
 Thanks,
 Sandeep
-'''.format(sender,';'.join(receivers),mail_cc,sub,message)
+'''.format(sender, ';'.join(receivers), mail_cc, sub, message)
     print(msg)
     try:
         smtpObj = smtplib.SMTP(mail_server, 25)
