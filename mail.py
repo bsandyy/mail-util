@@ -5,7 +5,6 @@ The purpose of this script is to read current day's emails in a specified mailbo
 
 import configparser
 import imaplib
-from pprint import pprint
 import email
 import datetime
 import re
@@ -54,9 +53,9 @@ def exch_extract():
         typ, data = my_mail.select(mail_folder)
         #  Format date = '17-Feb-2017'
         # date = datetime.date.today().strftime("%d-%b-%Y")
-        date = '17-Feb-2017'  # For Testing comment the below line
-        # date = (datetime.date.today() - datetime.timedelta(1)).strftime("%d-%b-%Y")
         date = datetime.date.today().strftime("%d-%b-%Y")
+        # date = '17-Feb-2017'  # For Testing comment the below line
+        #date = (datetime.date.today() - datetime.timedelta(3)).strftime("%d-%b-%Y")
         result, data = my_mail.search(
             None, '(SENTON {date} HEADER Subject "[ACTION REQUIRED][Reminder:")'.format(date=date))
         # result, data = mail.search(None, '(SENTSINCE {date} HEADER Subject "My Subject" NOT FROM "sand@ggm.com")'.format(date=date))
